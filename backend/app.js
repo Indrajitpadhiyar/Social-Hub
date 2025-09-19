@@ -1,8 +1,8 @@
 import cookieParser from "cookie-parser";
 import express from "express";
+import cors from "cors";
 import connectDB from "./db/db.js";
 import userRoutes from "./routes/user.route.js";
-import cors from "cors";
 
 const app = express();
 
@@ -14,7 +14,6 @@ app.use(cookieParser());
 connectDB();
 
 app.use("/users", userRoutes);
-
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
