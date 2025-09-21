@@ -20,7 +20,7 @@ export const createUser = async ({ name, email, password }) => {
     email,
     password: hashPassword,
   });
-  await user.save();
+  await user.save();  
   return user;
 };
 

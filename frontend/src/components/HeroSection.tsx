@@ -176,7 +176,7 @@ const HeroSection = () => {
               className="text-lg px-8 py-3"
               asChild
             >
-              <Link to={`${token ? "/dashboard" : "/register"}`}>
+              <Link to={`${token ? "/dashboard" : "/login"}`}>
                 Get Started
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Link>

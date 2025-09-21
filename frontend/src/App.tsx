@@ -4,14 +4,14 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import LoadingScreen from "./components/LoadingScreen";
 import Navbar from "./components/Navbar";
 import HeroSection from "./components/HeroSection";
 import Dashboard from "./components/Dashboard";
 import AuthForm from "./components/AuthForm";
 import NotFound from "./pages/NotFound";
-import Chat from "./components/Chat";
-// import Dashboard from "./components/Dashboard";
+import ProtectedRoute from "./components/routes/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -21,16 +21,26 @@ const App = () => {
   const [authMode, setAuthMode] = useState<"login" | "register">("login");
 
   useEffect(() => {
-    // Simulate initial loading
+    const savedAuth = localStorage.getItem("isAuthenticated");
+    if (savedAuth === "true") {
+      setIsAuthenticated(true);
+    }
+
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 3000);
+    }, 1500);
 
     return () => clearTimeout(timer);
   }, []);
 
-  const handleAuthModeChange = (mode: "login" | "register") => {
-    setAuthMode(mode);
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+    localStorage.setItem("isAuthenticated", "true");
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem("isAuthenticated");
   };
 
   if (loading) {
@@ -45,34 +55,37 @@ const App = () => {
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          {!isAuthenticated ? (
-            <Routes>
-              <Route path="/" element={<HeroSection />} />
-              <Route
-                path="/register"
-                element={
-                  <AuthForm
-                    mode={authMode}
-                    onModeChange={handleAuthModeChange}
-                  />
-                }
-              />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/chat" element={<Chat />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          ) : (
-            <>
-              <Navbar />
-              <Routes>
-                <Route path="/" element={<Dashboard />} />
-                {/* <Route path="/auth" element={<AuthForm />} /> */}
-                {/* <Route path="/dashboard" element={<Dashboard />} /> */}
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </>
-          )}
+          <Routes>
+            {/* Public routes */}
+            <Route path="/" element={<HeroSection />} />
+            <Route
+              path="/login"
+              element={
+                <AuthForm
+                  mode={authMode}
+                  onModeChange={setAuthMode}
+                  onLogin={handleLogin}
+                />
+              }
+            />
+
+            {/* Protected routes */}
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                  <>
+                    {/* <Navbar onLogout={handleLogout} /> */}
+                    <Dashboard />
+                  </>
+                </ProtectedRoute>
+              }
+            />
+            
+
+            {/* Catch-all route */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>

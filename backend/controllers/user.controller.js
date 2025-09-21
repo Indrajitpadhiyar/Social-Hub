@@ -1,7 +1,7 @@
 import userModel from "../models/user.model.js";
 import * as userService from "../services/user.service.js";
 import { validationResult } from "express-validator";
-
+    
 export const registerUser = async (req, res) => {
   console.log(req.body);
   const { username, email, password } = req.body;

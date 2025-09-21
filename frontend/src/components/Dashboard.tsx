@@ -111,13 +111,13 @@ const Dashboard = () => {
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
       {/* Welcome Header */}
-      {showHeader ? (
+      {showHeader && (
         <div
           className={`glass rounded-2xl p-6 bg-gradient-primary transition-all duration-700 ease-in-out
             ${
               showHeader
-                ? "translate-y-0 opacity-100"
-                : "-translate-y-full opacity-0"
+                ? "translate-y-0 opacity-100 duration-1000"
+                : "-translate-y-full opacity-0 duration-100"
             }
           `}
         >
@@ -128,8 +128,6 @@ const Dashboard = () => {
             Ready to connect and create amazing experiences with your friends?
           </p>
         </div>
-      ) : (
-        <Navbar />
       )}
       {/* Quick Actions Grid */}
       <div>

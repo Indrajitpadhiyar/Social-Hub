@@ -11,9 +11,10 @@ import { Eye, EyeOff, Mail, Lock, User, Chrome } from "lucide-react";
 interface AuthFormProps {
   mode: "login" | "register";
   onModeChange: (mode: "login" | "register") => void;
+  onLogin: () => void;
 }
 
-const AuthForm = ({ mode, onModeChange }: AuthFormProps) => {
+const AuthForm = ({ mode, onModeChange, onLogin }: AuthFormProps) => {
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -33,37 +34,24 @@ const AuthForm = ({ mode, onModeChange }: AuthFormProps) => {
     }
     return true;
   };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    if (!validateForm()) {
-      return;
-    }
-    if(mode === "register") {
-      axios
-        .post(`${import.meta.env.VITE_API_URL}/users/register`, formData)
-        .then((response) => {
-          console.log(response.data);
-          localStorage.setItem("token", response.data.token);
-          navigate("/");
-        }).catch((error) => {
-          console.log("Erororororor", error.response.data.error);
-          setError(error.response.data.error);
-        });
-    } else {
-      axios
-        .post(`${import.meta.env.VITE_API_URL}/users/login`, formData)
-        .then((response) => {
-          console.log(response.data);
-          localStorage.setItem("token", response.data.token);
-          navigate("/");
-        }).catch((error) => {
-          console.log("Erororororor", error.response.data.error);
-          setError(error.response.data.error);
-        });
-    }
+    if (!validateForm()) return;
 
-    console.log("Form submitted:", formData);
+    const endpoint = mode === "register" ? "/users/register" : "/users/login";
+
+    axios
+      .post(`${import.meta.env.VITE_API_URL}${endpoint}`, formData)
+      .then((response) => {
+        localStorage.setItem("token", response.data.token);
+        onLogin();
+        navigate("/dashboard");
+      })
+      .catch((error) => {
+        setError(error.response?.data?.error || "Something went wrong");
+      });
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -75,7 +63,7 @@ const AuthForm = ({ mode, onModeChange }: AuthFormProps) => {
       <Card className="w-full max-w-md glass p-8 space-y-6 animate-fade-in-up">
         {/* Header */}
         <div className="text-center space-y-2">
-          <div className="w-16 h-16  bg-gradient-primary rounded-2xl mx-auto shadow-glow pulse-glow">
+          <div className="w-16 h-16 bg-gradient-primary rounded-2xl mx-auto shadow-glow pulse-glow">
             <img
               src="/favicon.ico"
               alt="favicon"
