@@ -35,6 +35,8 @@ Built with a focus on **speed, simplicity, and real-time interaction**.
 
 **Frontend**
 - React.js
+- Vite
+- Tailwind CSS
 
 **Backend**
 - Node.js
@@ -46,9 +48,5 @@ Built with a focus on **speed, simplicity, and real-time interaction**.
 **Others**
 - REST APIs
 - Real-time communication (WebSockets / Socket.io)
-- Cloud storage (for media files)
-
----
-
-## 📂 Project Structure
+- cloudinary (for media files)
 
